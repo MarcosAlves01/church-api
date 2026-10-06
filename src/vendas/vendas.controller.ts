@@ -4,19 +4,24 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
 import { VendasService } from './vendas.service';
 
 export class CreateVendaDto {
-  @IsString()
-  pessoaId!: string;
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  pessoaId!: number;
 
-  @IsString()
-  produtoId!: string;
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  produtoId!: number;
 
   @Type(() => Number)
   @IsNumber()
@@ -31,12 +36,16 @@ export class CreateVendaDto {
 
 export class UpdateVendaDto {
   @IsOptional()
-  @IsString()
-  pessoaId?: string;
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  pessoaId?: number;
 
   @IsOptional()
-  @IsString()
-  produtoId?: string;
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  produtoId?: number;
 
   @IsOptional()
   @Type(() => Number)
@@ -61,7 +70,7 @@ export class VendasController {
   }
 
   @Get(':id')
-  buscarPorId(@Param('id') id: string) {
+  buscarPorId(@Param('id', ParseIntPipe) id: number) {
     return this.vendasService.buscarPorId(id);
   }
 
@@ -71,12 +80,15 @@ export class VendasController {
   }
 
   @Patch(':id')
-  atualizar(@Param('id') id: string, @Body() dto: UpdateVendaDto) {
+  atualizar(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateVendaDto,
+  ) {
     return this.vendasService.atualizar(id, dto);
   }
 
   @Delete(':id')
-  remover(@Param('id') id: string) {
+  remover(@Param('id', ParseIntPipe) id: number) {
     return this.vendasService.remover(id);
   }
 }

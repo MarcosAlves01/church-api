@@ -16,7 +16,7 @@ export class VendasService {
     });
   }
 
-  async buscarPorId(id: string) {
+  async buscarPorId(id: number) {
     const venda = await this.prisma.venda.findUnique({
       where: { id },
       include: { pessoa: true, produto: true },
@@ -46,7 +46,7 @@ export class VendasService {
     });
   }
 
-  async atualizar(id: string, dto: UpdateVendaDto) {
+  async atualizar(id: number, dto: UpdateVendaDto) {
     await this.buscarPorId(id);
 
     if (dto.pessoaId) {
@@ -78,7 +78,7 @@ export class VendasService {
     });
   }
 
-  async remover(id: string) {
+  async remover(id: number) {
     await this.buscarPorId(id);
 
     return this.prisma.venda.delete({
@@ -86,7 +86,7 @@ export class VendasService {
     });
   }
 
-  private async validarRelacionamentos(pessoaId?: string, produtoId?: string) {
+  private async validarRelacionamentos(pessoaId?: number, produtoId?: number) {
     if (pessoaId) {
       const pessoaExiste = await this.prisma.pessoa.findUnique({
         where: { id: pessoaId },

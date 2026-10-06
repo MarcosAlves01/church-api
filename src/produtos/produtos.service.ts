@@ -12,7 +12,7 @@ export class ProdutosService {
     });
   }
 
-  async buscarPorId(id: string) {
+  async buscarPorId(id: number) {
     const produto = await this.prisma.produto.findUnique({ where: { id } });
 
     if (!produto) {
@@ -32,7 +32,7 @@ export class ProdutosService {
     });
   }
 
-  async atualizar(id: string, dto: UpdateProdutoDto) {
+  async atualizar(id: number, dto: UpdateProdutoDto) {
     await this.buscarPorId(id);
 
     return this.prisma.produto.update({
@@ -45,7 +45,7 @@ export class ProdutosService {
     });
   }
 
-  async remover(id: string) {
+  async remover(id: number) {
     await this.buscarPorId(id);
 
     await this.prisma.venda.deleteMany({

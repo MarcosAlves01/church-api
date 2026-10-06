@@ -12,7 +12,7 @@ export class PessoasService {
     });
   }
 
-  async buscarPorId(id: string) {
+  async buscarPorId(id: number) {
     const pessoa = await this.prisma.pessoa.findUnique({ where: { id } });
 
     if (!pessoa) {
@@ -32,7 +32,7 @@ export class PessoasService {
     });
   }
 
-  async atualizar(id: string, dto: UpdatePessoaDto) {
+  async atualizar(id: number, dto: UpdatePessoaDto) {
     await this.buscarPorId(id);
 
     return this.prisma.pessoa.update({
@@ -45,7 +45,7 @@ export class PessoasService {
     });
   }
 
-  async remover(id: string) {
+  async remover(id: number) {
     await this.buscarPorId(id);
 
     await this.prisma.venda.deleteMany({

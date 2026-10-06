@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -49,7 +50,7 @@ export class PessoasController {
   }
 
   @Get(':id')
-  buscarPorId(@Param('id') id: string) {
+  buscarPorId(@Param('id', ParseIntPipe) id: number) {
     return this.pessoasService.buscarPorId(id);
   }
 
@@ -59,12 +60,15 @@ export class PessoasController {
   }
 
   @Patch(':id')
-  atualizar(@Param('id') id: string, @Body() dto: UpdatePessoaDto) {
+  atualizar(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdatePessoaDto,
+  ) {
     return this.pessoasService.atualizar(id, dto);
   }
 
   @Delete(':id')
-  remover(@Param('id') id: string) {
+  remover(@Param('id', ParseIntPipe) id: number) {
     return this.pessoasService.remover(id);
   }
 }
