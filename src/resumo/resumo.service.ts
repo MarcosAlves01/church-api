@@ -20,13 +20,17 @@ export class ResumoService {
       this.prisma.produto.count({ where: { ativo: true } }),
     ]);
 
-    const faturamento = await this.prisma.venda.aggregate({
-      _sum: {
+    const vendas = await this.prisma.venda.findMany({
+      select: {
         precoNaHora: true,
+        quantidade: true,
       },
     });
 
-    const faturamentoTotal = faturamento._sum.precoNaHora ?? 0;
+    const faturamentoTotal = vendas.reduce(
+      (total, venda) => total + venda.precoNaHora * venda.quantidade,
+      0,
+    );
     const valorMedioPorVenda =
       totalVendas > 0 ? Math.round(faturamentoTotal / totalVendas) : 0;
 
