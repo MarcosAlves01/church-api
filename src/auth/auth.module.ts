@@ -15,12 +15,18 @@ import { JwtStrategy } from './jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
+        const secret = config.get<string>('JWT_SECRET');
+
+        if (!secret) {
+          throw new Error('JWT_SECRET não está definido.');
+        }
+
         const expiresIn =
           (config.get<string>('JWT_EXPIRES_IN') as
             JwtSignOptions['expiresIn'] | undefined) ?? '8h';
 
         return {
-          secret: config.get<string>('JWT_SECRET') ?? 'default-secret',
+          secret,
           signOptions: {
             expiresIn,
           },
