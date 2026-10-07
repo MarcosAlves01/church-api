@@ -11,6 +11,31 @@ services:
       POSTGRES_DB: retiro_db
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U retiro -d retiro_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: retiro-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # Dentro da rede do compose o host do banco e o nome do servico "postgres".
+      DATABASE_URL: postgresql://retiro:retiro123@postgres:5432/retiro_db?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+      FRONTEND_URL: ${FRONTEND_URL}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_SENHA: ${ADMIN_SENHA}
 
 volumes:
   pgdata:
