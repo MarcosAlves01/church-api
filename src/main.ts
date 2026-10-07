@@ -9,8 +9,14 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  // FRONTEND_URL aceita uma ou mais origens separadas por virgula.
+  const origens = (process.env.FRONTEND_URL ?? '')
+    .split(',')
+    .map((origem) => origem.trim())
+    .filter((origem) => origem.length > 0);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
+    origin: origens.length === 1 ? origens[0] : origens,
     credentials: true,
   });
 
