@@ -56,7 +56,7 @@ export class AuthService {
     return this.gerarResposta(usuario.id, usuario.nome, usuario.email);
   }
 
-  async buscarUsuarioAutenticado(id: string) {
+  async buscarUsuarioAutenticado(id: number) {
     const usuario = await this.prisma.usuario.findUnique({
       where: { id },
       select: { id: true, nome: true, email: true },
@@ -69,7 +69,7 @@ export class AuthService {
     return usuario;
   }
 
-  private async gerarResposta(id: string, nome: string, email: string) {
+  private async gerarResposta(id: number, nome: string, email: string) {
     const token = await this.jwtService.signAsync({ sub: id, email });
 
     return {

@@ -50,7 +50,7 @@ export class AuthController {
   }
 
   @Get('me')
-  me(@Req() req: Request & { user: { id: string } }) {
+  me(@Req() req: Request & { user: { id: number } }) {
     return this.authService.buscarUsuarioAutenticado(req.user.id);
   }
 

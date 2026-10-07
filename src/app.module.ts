@@ -7,6 +7,7 @@ import { PessoasModule } from './pessoas/pessoas.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProdutosModule } from './produtos/produtos.module';
 import { ResumoModule } from './resumo/resumo.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 import { VendasModule } from './vendas/vendas.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { VendasModule } from './vendas/vendas.module';
     ProdutosModule,
     VendasModule,
     ResumoModule,
+    UsuariosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
