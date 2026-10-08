@@ -32,11 +32,11 @@ async function main() {
 
   await prisma.usuario.upsert({
     where: { email },
-    update: {},
+    update: { nome: 'Admin', senhaHash },
     create: { nome: 'Admin', email, senhaHash },
   });
 
-  console.log(`Usuário criado: ${email}`);
+  console.log(`Usuário criado ou atualizado: ${email}`);
 }
 
 main()

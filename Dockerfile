@@ -31,5 +31,5 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-# Aplica migrations e sobe a API. (O seed do admin e rodado separadamente.)
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
+# Aplica migrations, cria/atualiza o admin e sobe a API.
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/prisma/seed.js && node dist/src/main.js"]
