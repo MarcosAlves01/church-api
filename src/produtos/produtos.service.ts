@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProdutoDto, UpdateProdutoDto } from './produtos.controller';
 
@@ -22,7 +26,23 @@ export class ProdutosService {
     return produto;
   }
 
-  criar(dto: CreateProdutoDto) {
+  private async validarNomeUnico(nome?: string, ignorarId?: number) {
+    if (!nome) {
+      return;
+    }
+
+    const existente = await this.prisma.produto.findFirst({
+      where: { nome: { equals: nome, mode: 'insensitive' } },
+    });
+
+    if (existente && existente.id !== ignorarId) {
+      throw new ConflictException('Já existe um produto com este nome');
+    }
+  }
+
+  async criar(dto: CreateProdutoDto) {
+    await this.validarNomeUnico(dto.nome);
+
     return this.prisma.produto.create({
       data: {
         nome: dto.nome,
@@ -34,6 +54,7 @@ export class ProdutosService {
 
   async atualizar(id: number, dto: UpdateProdutoDto) {
     await this.buscarPorId(id);
+    await this.validarNomeUnico(dto.nome, id);
 
     return this.prisma.produto.update({
       where: { id },

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePessoaDto, UpdatePessoaDto } from './pessoas.controller';
 
@@ -22,7 +26,23 @@ export class PessoasService {
     return pessoa;
   }
 
-  criar(dto: CreatePessoaDto) {
+  private async validarTelefoneUnico(telefone?: string | null, ignorarId?: number) {
+    if (!telefone) {
+      return;
+    }
+
+    const existente = await this.prisma.pessoa.findFirst({
+      where: { telefone },
+    });
+
+    if (existente && existente.id !== ignorarId) {
+      throw new ConflictException('Já existe uma pessoa com este telefone');
+    }
+  }
+
+  async criar(dto: CreatePessoaDto) {
+    await this.validarTelefoneUnico(dto.telefone);
+
     return this.prisma.pessoa.create({
       data: {
         nome: dto.nome,
@@ -34,6 +54,7 @@ export class PessoasService {
 
   async atualizar(id: number, dto: UpdatePessoaDto) {
     await this.buscarPorId(id);
+    await this.validarTelefoneUnico(dto.telefone, id);
 
     return this.prisma.pessoa.update({
       where: { id },
